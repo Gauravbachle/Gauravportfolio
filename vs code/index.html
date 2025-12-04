@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Engineers Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --accent: #ff9f1c;
+      --accent-soft: #ffbf69;
+      --text: #f5f5f7;
+      --muted: #a0a3b1;
+      --card: #121729;
+      --pill: #1f2338;
+      --danger: #ff3366;
+      --success: #2ec4b6;
+      --radius-lg: 24px;
+      --radius-md: 14px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 22px 60px rgba(0,0,0,0.45);
+      --shadow-pill: 0 10px 30px rgba(0,0,0,0.55);
+      --transition-fast: 0.18s cubic-bezier(.33,.01,.07,1.03);
+      --transition-med: 0.36s cubic-bezier(.32,.02,.29,0.99);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top left, #1a1a40 0, #050816 55%, #020012 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), rgba(5,8,22,0.85), transparent);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .nav {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: conic-gradient(from 220deg, #ff9f1c, #ffbf69, #2ec4b6, #ff3366, #ff9f1c);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-logo::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 8px;
+      background: radial-gradient(circle at 30% 0, rgba(255,255,255,0.3) 0, transparent 45%);
+    }
+
+    .brand-text-main {
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      font-size: 1rem;
+    }
+
+    .brand-text-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .nav-pill {
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: rgba(17,22,43,0.9);
+      border: 1px solid rgba(255,255,255,0.06);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-pill);
+    }
+
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 6px rgba(46,196,182,0.32);
+    }
+
+    .nav-button {
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(135deg, #171b34, #20274a);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.82rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+      box-shadow: var(--shadow-pill);
+    }
+
+    .nav-button span {
+      font-size: 1.05rem;
+      transform: translateY(1px);
+    }
+
+    .nav-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.7);
+      background: linear-gradient(135deg, #1f2440, #2d3560);
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 38px 18px 72px;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.3fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    @media (max-width: 880px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(18,23,41,0.9);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-bottom: 18px;
+    }
+
+    .hero-label-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #ff9f1c, #ffbf69);
+      box-shadow: 0 0 12px rgba(255,191,105,0.7);
+    }
+
+    .hero-title {
+      font-size: clamp(2.3rem, 4vw, 3.1rem);
+      line-height: 1.03;
+      letter-spacing: 0.01em;
+      margin-bottom: 14px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(110deg, #ff9f1c, #ffbf69, #2ec4b6);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 0.96rem;
+      max-width: 440px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .hero-tag {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--pill);
+      font-size: 0.68rem;
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .hero-btn-primary {
+      border: none;
+      outline: none;
+      padding: 11px 22px;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff9f1c, #ff3366);
+      color: #050816;
+      box-shadow: 0 14px 35px rgba(0,0,0,0.75);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+    }
+
+    .hero-btn-primary span {
+      font-size: 1.1rem;
+      transform: translateY(1px);
+    }
+
+    .hero-btn-primary:hover {
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.85);
+    }
+
+    .hero-btn-ghost {
+      border-radius: 999px;
+      padding: 8px 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(10,13,30,0.8);
+      color: var(--muted);
+      font-size: 0.78rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .hero-btn-ghost:hover {
+      background: rgba(16,20,42,0.9);
+      border-color: rgba(255,255,255,0.25);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    .hero-btn-ghost-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+    }
+
+    .hero-note {
+      margin-top: 10px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-note strong {
+      color: var(--accent-soft);
+    }
+
+    .hero-right {
+      position: relative;
+    }
+
+    .hero-card {
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.09) 0, transparent 40%),
+                  radial-gradient(circle at 100% 100%, rgba(46,196,182,0.2) 0, transparent 40%),
+                  var(--card);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 18px 16px 16px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .hero-card-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+    }
+
+    .hero-card-badge {
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(5,8,22,0.86);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-card-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .hero-card-main {
+      border-radius: 18px;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.1) 0, transparent 45%),
+                  radial-gradient(circle at 100% 0, rgba(255,191,105,0.16) 0, transparent 50%),
+                  #050816;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wave {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(28px);
+      opacity: 0.9;
+      mix-blend-mode: screen;
+      transition: transform 2.5s ease-out, opacity 2.5s ease-out;
+    }
+
+    .wave:nth-child(1) {
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(255,159,28,0.9), transparent 58%);
+      top: 40%;
+      left: -10%;
+    }
+
+    .wave:nth-child(2) {
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(255,63,111,0.9), transparent 60%);
+      top: -10%;
+      right: -15%;
+    }
+
+    .wave:nth-child(3) {
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(46,196,182,0.85), transparent 60%);
+      bottom: -18%;
+      right: 5%;
+    }
+
+    .hero-orbit {
+      position: relative;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 14px;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.16) 0, transparent 50%),
+                  rgba(9,11,33,0.96);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      overflow: hidden;
+    }
+
+    .hero-orbit-text {
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .hero-orbit-text strong {
+      color: var(--accent-soft);
+    }
+
+    .hero-orbit-meters {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 120px;
+    }
+
+    .meter {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .meter-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2ec4b6, #ffbf69, #ff3366);
+      transform-origin: left;
+      transform: scaleX(0.2);
+      transition: transform 1.2s var(--transition-med);
+    }
+
+    .hero-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .hero-chip {
+      font-size: 0.68rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(10,13,30,0.9);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+    }
+
+    .hero-card-footer {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .hero-card-footer span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--danger);
+      box-shadow: 0 0 0 0 rgba(255,51,102,0.65);
+      animation: pulse 1.6s infinite;
+    }
+
+    .section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 18px 60px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .section-tagline {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .section-columns {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 880px) {
+      .section-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .about-card {
+      border-radius: var(--radius-md);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 16px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    }
+
+    .about-title {
+      font-size: 0.94rem;
+      margin-bottom: 6px;
+    }
+
+    .about-text {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .about-meta-list {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .about-meta-list li {
+      margin-bottom: 4px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (max-width: 880px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      border-radius: var(--radius-md);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 14px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(255,159,28,0.2), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(46,196,182,0.16), transparent 60%);
+      opacity: 0;
+      transition: opacity var(--transition-med);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.18);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+
+    .card-body {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .card-badge {
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      background: rgba(8,12,30,0.9);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.68rem;
+    }
+
+    .card-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card-count-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 880px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .contact-card {
+      border-radius: var(--radius-md);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 16px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .contact-card strong {
+      color: var(--accent-soft);
+    }
+
+    .contact-form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.78rem;
+    }
+
+    .field label {
+      color: var(--muted);
+    }
+
+    .field input,
+    .field textarea {
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(5,8,22,0.9);
+      color: var(--text);
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: var(--accent-soft);
+    }
+
+    .field textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .contact-submit {
+      justify-self: flex-start;
+      margin-top: 4px;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 18px;
+      text-align: center;
+      font-size: 0.74rem;
+      color: var(--muted);
+      background: radial-gradient(circle at 50% 0, rgba(255,255,255,0.04) 0, transparent 55%), #050816;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255,51,102,0.6);
+        transform: scale(1);
+      }
+      70% {
+        box-shadow: 0 0 0 8px rgba(255,51,102,0);
+        transform: scale(1.1);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(255,51,102,0);
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+
+  <div class="page">
+    <header>
+      <nav class="nav">
+        <div class="brand">
+          <div class="brand-logo"></div>
+          <div>
+            <div class="brand-text-main">Engineers</div>
+            <div class="brand-text-sub">Portfolio of ideas & systems</div>
+          </div>
+        </div>
+        <div class="nav-links">
+          <div class="nav-pill">
+            <span class="nav-dot"></span>
+            Available for new projects
+          </div>
+          <button class="nav-button" id="navContact">
+            Contact
+            <span>↗</span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div>
+          <div class="hero-label">
+            <div class="hero-label-dot"></div>
+            Engineering portfolio • Firm / Individual
+          </div>
+          <h1 class="hero-title">
+            Engineers always
+            <span>makes change.</span>
+          </h1>
+          <p class="hero-subtitle">
+            A focused portfolio for engineers who design, build, and ship dependable systems — from prototypes to production-ready platforms.
+          </p>
+          <div class="hero-tags">
+            <div class="hero-tag">Product engineering</div>
+            <div class="hero-tag">System design</div>
+            <div class="hero-tag">Technical leadership</div>
+          </div>
+          <div class="hero-actions">
+            <button class="hero-btn-primary" id="viewProjects">
+              View selected work
+              <span>★</span>
+            </button>
+            <button class="hero-btn-ghost" id="viewAbout">
+              <span class="hero-btn-ghost-dot"></span>
+              Learn about this profile
+            </button>
+          </div>
+          <p class="hero-note">
+            <strong>10+ years</strong>
+            building products with measurable impact.
+          </p>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-card">
+            <div class="hero-card-header">
+              <div class="hero-card-title">Snapshot</div>
+              <div class="hero-card-badge">
+                <span class="hero-card-badge-dot"></span>
+                Open to collaborations
+              </div>
+            </div>
+            <div class="hero-card-main">
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+
+              <div class="hero-orbit">
+                <div class="hero-orbit-text">
+                  Engineering focus on <strong>reliability</strong>, <strong>performance</strong>, and <strong>human‑centric experiences</strong>.
+                </div>
+                <div class="hero-orbit-meters">
+                  <div class="meter">
+                    <div class="meter-fill" id="meterReliability"></div>
+                  </div>
+                  <div class="meter">
+                    <div class="meter-fill" id="meterInnovation"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="hero-chip-row">
+                <div class="hero-chip">Backend & APIs</div>
+                <div class="hero-chip">Frontend systems</div>
+                <div class="hero-chip">Cloud & DevOps</div>
+              </div>
+            </div>
+            <div class="hero-card-footer">
+              <span>
+                <div class="hero-pulse-dot"></div>
+                Currently: refining portfolio
+              </span>
+              <span>Location: <strong>Remote-friendly</strong></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="about">
+        <div class="section-header">
+          <div class="section-title">About</div>
+          <div class="section-tagline">Context around the engineer or firm.</div>
+        </div>
+        <div class="section-columns">
+          <div class="about-card">
+            <h3 class="about-title">Profile</h3>
+            <p class="about-text">
+              This portfolio template is designed for software engineers, product teams, or engineering firms that want a modern one-page presence without starting from scratch.
+            </p>
+            <p class="about-text">
+              Replace this copy with your own summary, experience, and focus areas. Highlight what you enjoy solving and the kinds of systems you are most proud of shipping.
+            </p>
+            <ul class="about-meta-list">
+              <li><strong>Role:</strong> Principal Engineer / Studio</li>
+              <li><strong>Focus:</strong> Web apps, APIs, cloud-native systems</li>
+              <li><strong>Based in:</strong> Add your city or “Global / Remote”</li>
+            </ul>
+          </div>
+
+          <div class="about-card">
+            <h3 class="about-title">Services</h3>
+            <p class="about-text">
+              Use this area to outline how you work with clients or employers. Keep it concise and outcome-focused.
+            </p>
+            <ul class="about-meta-list">
+              <li>Architecture and system design for new products.</li>
+              <li>End‑to‑end feature development across frontend and backend.</li>
+              <li>Performance, reliability, and DX improvements to existing codebases.</li>
+              <li>Technical mentoring, reviews, and engineering practices.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="projects">
+        <div class="section-header">
+          <div class="section-title">Selected work</div>
+          <div class="section-tagline">Three placeholder projects you can replace.</div>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="card-label">Platform</div>
+            <div class="card-title">Real‑time analytics dashboard</div>
+            <p class="card-body">
+              Designed and implemented a web-based dashboard for live metrics, with streaming data, custom alerts, and role‑based access control.
+            </p>
+            <div class="card-meta">
+              <span class="card-badge">TypeScript • React • Node</span>
+              <span class="card-count">
+                <span class="card-count-dot"></span>
+                12k+ daily events
+              </span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-label">Backend</div>
+            <div class="card-title">Payments & billing APIs</div>
+            <p class="card-body">
+              Built a resilient billing layer with idempotent APIs, background workers, and observability built into every critical path.
+            </p>
+            <div class="card-meta">
+              <span class="card-badge">Go • Postgres • Queues</span>
+              <span class="card-count">
+                <span class="card-count-dot"></span>
+                0 chargeback bugs
+              </span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-label">Experience</div>
+            <div class="card-title">Design‑system driven UI</div>
+            <p class="card-body">
+              Led the implementation of a shared component library, enabling teams to ship faster with consistent, accessible interfaces.
+            </p>
+            <div class="card-meta">
+              <span class="card-badge">Design systems • Accessibility</span>
+              <span class="card-count">
+                <span class="card-count-dot"></span>
+                30% faster delivery
+              </span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="contact">
+        <div class="section-header">
+          <div class="section-title">Contact</div>
+          <div class="section-tagline">A simple way to invite conversations.</div>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-card">
+            <p>
+              This section can include your email, preferred messaging channel, or a link to a calendar. Replace the fields in the form with your own backend endpoint.
+            </p>
+            <p style="margin-top:8px;">
+              Example:<br />
+              <strong>Email:</strong> you@example.com<br />
+              <strong>GitHub:</strong> github.com/your‑handle<br />
+              <strong>LinkedIn:</strong> linkedin.com/in/your‑profile
+            </p>
+          </div>
+          <form class="contact-card contact-form" onsubmit="event.preventDefault(); alert('Demo only — connect this to your backend or form service.');">
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" type="text" placeholder="Your name" />
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" type="email" placeholder="you@example.com" />
+            </div>
+            <div class="field">
+              <label for="message">Project or role</label>
+              <textarea id="message" placeholder="Tell a bit about what you have in mind."></textarea>
+            </div>
+            <button class="hero-btn-primary contact-submit" type="submit">
+              Send message
+              <span>➝</span>
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Engineers Portfolio — update the content, keep the structure, and make it yours.
+    </footer>
+  </div>
+
+  <script>
+    // Background particle field (simple and lightweight)
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    const dots = [];
+    const DOT_COUNT = 70;
+
+    function createDots() {
+      dots.length = 0;
+      for (let i = 0; i < DOT_COUNT; i++) {
+        dots.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          r: Math.random() * 2.2 + 0.4,
+          hue: 40 + Math.random() * 70
+        });
+      }
+    }
+
+    function updateDots() {
+      for (const d of dots) {
+        d.x += d.vx;
+        d.y += d.vy;
+
+        if (d.x < -50) d.x = width + 50;
+        if (d.x > width + 50) d.x = -50;
+        if (d.y < -50) d.y = height + 50;
+        if (d.y > height + 50) d.y = -50;
+      }
+    }
+
+    function drawDots() {
+      ctx.clearRect(0, 0, width, height);
+      for (const d of dots) {
+        const grd = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.r * 6);
+        grd.addColorStop(0, 'rgba(255,255,255,0.25)');
+        grd.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r * 6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function loop() {
+      updateDots();
+      drawDots();
+      requestAnimationFrame(loop);
+    }
+
+    createDots();
+    loop();
+
+    window.addEventListener('resize', () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      createDots();
+    });
+
+    // Hero interactive logic
+    const waves = document.querySelectorAll('.wave');
+    const meterReliability = document.getElementById('meterReliability');
+    const meterInnovation = document.getElementById('meterInnovation');
+    const heroCardMain = document.querySelector('.hero-card-main');
+
+    let hoverTimeout;
+
+    heroCardMain.addEventListener('pointermove', (e) => {
+      const rect = heroCardMain.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      const intensity = Math.sqrt(x * x + y * y);
+
+      waves.forEach((w, i) => {
+        const scale = 1 + intensity * (0.4 + i * 0.2);
+        const tx = x * 40 * (1 + i * 0.5);
+        const ty = y * 40 * (1 + i * 0.5);
+        w.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+        w.style.opacity = 0.6 + (1 - Math.min(intensity, 1)) * 0.4;
+      });
+
+      meterReliability.style.transform = `scaleX(${0.6 + intensity * 0.3})`;
+      meterInnovation.style.transform = `scaleX(${0.4 + intensity * 0.4})`;
+
+      clearTimeout(hoverTimeout);
+      hoverTimeout = setTimeout(() => {
+        waves.forEach((w) => {
+          w.style.transform = '';
+          w.style.opacity = '';
+        });
+        meterReliability.style.transform = 'scaleX(0.6)';
+        meterInnovation.style.transform = 'scaleX(0.4)';
+      }, 800);
+    });
+
+    // Scroll helpers
+    const aboutSection = document.getElementById('about');
+    const projectsSection = document.getElementById('projects');
+    const contactSection = document.getElementById('contact');
+
+    document.getElementById('viewAbout').addEventListener('click', () => {
+      aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    document.getElementById('viewProjects').addEventListener('click', () => {
+      projectsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    document.getElementById('navContact').addEventListener('click', () => {
+      contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</body>
+</html>
